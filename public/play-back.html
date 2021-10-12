@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>PlayBack 저장 영상</title>
+  <script src="./js/vis-timeline-graph2d.min.js"></script>
+  <link href="./css/vis-timeline-graph2d.min.css" rel="stylesheet" type="text/css" />
+
+</head>
+<style>
+  .wrap {
+    width: 1200px;
+  }
+
+  #video_parent {
+    width: 640px;
+    height: 360px;
+    background: #ddd;
+  }
+
+  .right,
+  .left {
+    display: inline-block;
+    vertical-align: top;
+  }
+
+  form input {
+    width: calc(100% - 110px);
+  }
+
+  form div span {
+    display: inline-block;
+    width: 100px;
+    vertical-align: top;
+  }
+
+  #playback-btn-group {
+    display: none;
+  }
+
+  #player_ctrl>button:hover:not([disabled]) {
+    cursor: pointer;
+  }
+
+  .errMsgWrap {
+    width: 640px;
+    height: 155px;
+    margin-top: 20px;
+    overflow-y: auto;
+  }
+
+  .errMsgTitle {
+    padding: 5px;
+    height: 20px;
+    background: #ddd;
+    border: 1px solid;
+    border-bottom: 0;
+  }
+
+  #errMsgContent {
+    border: 1px solid;
+    padding: 5px;
+  }
+
+</style>
+
+<body>
+  <h1>PlayBack 저장 영상</h1>
+  <h2>
+    영상 정보 입력
+  </h2>
+  <div class="wrap">
+    <div class="left">
+      <div id="video_parent" class="controls video col-sm-8"></div>
+      <div id="playback-btn-group" class="col-md-12">
+        <div class="time_line">
+          <div id="mytimeline"></div>
+        </div>
+        <div class="row playback-dp">
+          <input id="startDt">
+          </span>
+          <owl-date-time [showSecondsTimer]="true" #startDt></owl-date-time>
+          <span id="player_ctrl">
+            <button type="button" onclick="storageVideoReq('btn')">영상요청</button>
+            <button id="player_ctrl_play" onclick="storageVideoPlay()" disabled>재생</button>
+            <button id="player_ctrl_stop" onclick="storageVideoPause()" disabled>일시정지</button>
+            <button id="player_ctrl_dec" onclick="setPlayRateMinus()" disabled>감속(배속)</button>
+            <button id="player_ctrl_acc" onclick="setPlayRatePlus()" disabled>가속(배속)</button>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="right">
+      <form name="frm">
+        <fieldset>
+          <legend>영상 정보 입력</legend>
+          <div><span>URL</span></div>
+          <div><input type="text" name="url" style="width: 200px" value=""></div>
+          <div><span>transcode(-1,0,size)</span></div>
+          <div><span>&nbsp;</span> <input type="number" name="transcode" value=""></div>
+          <div><span>영상배속 </span>&nbsp;<span id="player_speed"></span></div>
+          <button id="player_ctrl_create" onclick="createDMSVideo()" style="margin-top:20px; float: right"
+            type="button">플레이어 생성</button>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+  <div class="errMsgWrap">
+    <div class="errMsgTitle">* Error Message (JSON)</div>
+    <div id="errMsgContent"></div>
+  </div>
+  <script src="./js/jquery-3.4.1.slim.js"></script>
+  <script src="./js/moment.min.js"></script>
+  <script src="dist/dms-video-player.js"></script>
+  <script>
+    let player;
+    let visDataSet = [];
+    let timeLineParent; // 타임라인 영역
+    let eventData = []; // timeline datas
+    let timeline; // timeline object
+    let props; // timeline 정보
+    let startDate = new Date(moment().add(-1, 'd')); // 저장영상 시작시간
+    let endDate = new Date(moment()); // 저장영상 종료시간
+    let playResult = false; // 영상 재생 여부
+    let speed = 1.0; // 저장영상 배속
+    let date = new Date();
+    date.setTime(new Date().getTime() - (1 * 24 * 60 * 60 * 1000));
+
+    document.getElementById('startDt').value = date.toISOString().substring(0, 10);
+    let rtspUrl = ''
+    let transcodeValue = -2
+    let proto = ''
+
+    function createDMSVideo() {
+
+      errorMsgCallback('success')
+      let transcode = document.forms['frm'].transcode.value
+      transcode = transcode.trim()
+      if (transcode.length > 0) {
+        transcodeValue = Number(transcode)
+        if (transcodeValue != -1 && transcodeValue != 0 && transcodeValue < 32 && transcodeValue > 2000) {
+          errorMsgCallback(`invalid transcode value ${transcodeValue}`)
+          return
+        }
+      }
+
+      // 비디오 생성 옵션 정의
+
+      rtspUrl = document.forms['frm'].url.value
+      if (!rtspUrl || '' || null) {
+        document.getElementById('playerStatus').innerText = `:: URL 정보를 입력해 주세요.`
+        return false;
+      }
+      if (rtspUrl.search(/rtsp:\/\/[^\/]+/g) == 0) {
+        proto = "rtsp"
+      } else if (rtspUrl.search(/realhub:\/\/\/[^\/]+/g) == 0) {
+        proto = "realhub"
+      } else if (rtspUrl.search(/vurix:\/\/\/[^\/]+/g) == 0) {
+        proto = "vurix"
+      } else {
+        errorMsgCallback(`invalid url: ${rtspUrl}`)
+        return
+      }
+
+      let videoOptions = {
+        'id': 'test_video',
+        'url': rtspUrl,
+        'srcType': proto,
+        'stream': 'ws://localhost:8080/media/api/v1/stream',
+        'errorMsgFunc': errorMsgCallback,
+        'videoAttr': {}
+      };
+
+      if (transcodeValue != -2) {
+        videoOptions.transcode = transcodeValue
+      }
+      console.log(videoOptions)
+
+      // DMS Video Player 생성 API 호출
+      player = dmsVideoPlayer.createVideo(videoOptions);
+      // DMS Video Player 가 들어갈 부모 DIV 영역 안으로 APPEND
+      document.getElementById('video_parent').appendChild(player);
+      // Video 태그 정보 확인용 timeUpdate 이벤트 등록
+      // getPlayerInfo();
+
+      // 플레이어 생성 버튼 disabled
+      document.getElementById('player_ctrl_create').disabled = true;
+
+      // 배속 정보 입력
+      document.getElementById('player_speed').innerText = `${speed}`;
+
+      setTimeout(() => {
+        initCustomTimeline(new Date());
+      }, 1000);
+    }
+
+    // 에러 메시지 처리 함수 (dms-player 내부 오류)
+    function errorMsgCallback(err) {
+      const errStr = JSON.stringify(err, null, 4);
+      document.getElementById('errMsgContent').innerText = errStr;
+    }
+
+
+    /**********************************************************************************************
+     *   타임라인 정의 영역
+     * *********************************************************************************************/
+    function initCustomTimeline(currentDate) {
+
+      // timeline 기준 시간에서 앞뒤로 2시간 차이를 구해서 utc 형태로 변환
+      let startTimeLine = new Date(currentDate.setHours(currentDate.getHours() - 1));
+      let endTimeLine = new Date(currentDate.setHours(currentDate.getHours() + 2));
+      startTimeLine = moment(new Date(startTimeLine)).unix();
+      endTimeLine = moment(new Date(endTimeLine)).unix();
+
+      // center 기준 시간 계산
+      const centerTimeLine = new Date(currentDate.setHours(currentDate.getHours() - 1));
+      console.log(startTimeLine);
+      console.log(endTimeLine);
+
+      // 타임라인을 그리기 위한 정보 얻기
+      dmsVideoPlayer.getTimeLine(player, startTimeLine, endTimeLine).then(dates => {
+        console.log(dates);
+
+        // vis 타임라인 생성 예시
+        const options = {
+          showCurrentTime: true,
+          showMajorLabels: true,
+          showMinorLabels: true,
+          format: {
+            majorLabels: function (date, scale, step) {
+              return moment(date).format('YYYY-MM-DD');
+            }
+          },
+          height: '80px'
+        };
+
+        // return 되는 dates는 배열.
+        // 미녹화 구간이 있는 경우 해당구간을 제외한 타임라인 바를 그리기 위한 데이터셋 세팅
+        dates.forEach((value, index) => {
+          visDataSet.push({
+            id: index + 1,
+            start: value['startDate'],
+            end: value['endDate'],
+            className: 'red'
+          });
+        });
+
+        // 타임라인 범위 지정하기 ( utc -> date, ms 추가)
+        const startRange = moment(Number(String(startTimeLine + '000'))).toDate().getTime() - 5 * 60;
+        const endRange = moment(Number(String(endTimeLine + '000'))).toDate().getTime() + 5 * 60;
+
+        timeLineParent = document.getElementById('mytimeline');
+        if (eventData.length > 0) {
+          // change 이벤트로 인한 변경 처리가 필요할 때, 데이터 업데이트 및 customtime 위치 변경
+          eventData.update(visDataSet);
+          if (player.paused) {
+            timeline.setCustomTime(currentDate, 'video_customtime');
+            timeline.setWindow(startRange, endRange, {
+              animation: false
+            });
+          }
+          return false;
+        } else {
+          eventData = new vis.DataSet(visDataSet);
+        }
+        timeline = new vis.Timeline(timeLineParent, eventData, options);
+        // timeline bar, view
+        timeline.addCustomTime(centerTimeLine, 'video_customtime');
+        timeline.setWindow(startRange, endRange, {
+          animation: true
+        });
+
+        timeline.on('rangechanged', (e) => {
+          const midPoint = new Date((e.start.getTime() + e.end.getTime()) / 2);
+          initCustomTimeline(midPoint);
+        });
+
+        // 타임라인 클릭 이벤트 기능 정의
+        timeline.on('click', () => {
+          if (timeline) {
+            // 현재 클릭 지점 시간
+            props = timeline.getEventProperties(event);
+            startDate = props.time;
+            endDate = new Date(moment(startDate).add(+1, 'd'));
+
+            timeline.moveTo(new Date(startDate));
+            resetVideo();
+            storageVideoReq('reReq');
+          }
+        });
+
+        // 타임라인 클릭 이벤트 기능 정의
+        timeline.on('currentTimeTick', () => {
+          const currentTime = timeline.getCustomTime('video_customtime');
+          const endTime = timeline.getWindow().end;
+          if (currentTime > endTime) {
+            timeline.moveTo(currentTime);
+          }
+        });
+        // 버튼 활성화
+        $("#playback-btn-group").show();
+        // dmsVideoPlayer.playbackPlay(this.player, this.utcStartDate, this.utcEndDate);
+      });
+    }
+
+    /**********************************************************************************************
+     *   DMS VIDEO 저장영상 재생 & 일시정지 요청 영역
+     * *********************************************************************************************/
+    function storageVideoPlay() {
+      speed = 1; // 배속 초기화
+      if (player) {
+        storageVideoReq();
+      } else {
+        // dmsVideoPlayer.playbackPlay(player);
+        playResult = true;
+      }
+    }
+
+    function storageVideoPause() {
+      dmsVideoPlayer.playbackPause(player);
+
+      // 재생 버튼 disabled 해제
+      document.getElementById('player_ctrl_play').disabled = false;
+
+      // 일시정지, 감속, 가속 버튼
+      document.getElementById('player_ctrl_stop').disabled = true;
+      document.getElementById('player_ctrl_dec').disabled = true;
+      document.getElementById('player_ctrl_acc').disabled = true;
+    }
+
+    /**********************************************************************************************
+     *   DMS VIDEO 영상 배속 처리
+     * *********************************************************************************************/
+    function setPlayRateMinus() {
+      if (speed <= 1) {
+        alert('최저 배속입니다.\n(영상 재생 속도의 유효 범위 1~16)');
+        return false;
+      }
+      speed--;
+      // 배속 정보 입력
+      document.getElementById('player_speed').innerText = `${speed}`;
+      player.playbackRate = speed;
+    }
+
+    function setPlayRatePlus() {
+      if (speed >= 16) {
+        alert('최고 배속입니다.\n(영상 재생 속도의 유효 범위 1~16)');
+        return false;
+      }
+      speed++;
+      // 배속 정보 입력
+      document.getElementById('player_speed').innerText = `${speed}`;
+      player.playbackRate = speed;
+    }
+
+    /**********************************************************************************************
+     *   DMS VIDEO 저장영상 요청 영역
+     * *********************************************************************************************/
+    function storageVideoReq(reReq) {
+      speed = 1; // 배속 초기화
+      playResult = true;
+      if (!reReq) {
+        resetVideo();
+      } else if (reReq === 'btn') {
+        startDate = $('#startDt').val();
+      }
+
+      utcStartDate = moment(new Date(startDate)).format('X');
+      utcEndDate = moment(new Date(endDate)).format('X');
+
+      timeline.setCustomTime(new Date(startDate), 'video_customtime');
+      timeline.moveTo(new Date(startDate));
+
+      dmsVideoPlayer.playbackPlay(player, utcStartDate, utcEndDate);
+
+      // 일시정지, 감속, 가속 버튼 disabled 해제
+      document.getElementById('player_ctrl_stop').disabled = false;
+      document.getElementById('player_ctrl_dec').disabled = false;
+      document.getElementById('player_ctrl_acc').disabled = false;
+    }
+
+    /**********************************************************************************************
+     *   DMS VIDEO 초기화
+     * *********************************************************************************************/
+    function resetVideo() {
+      let videoParent = document.getElementById('video_parent');
+      $(player).off('timeupdate');
+      dmsVideoPlayer.streamStop(player);
+      dmsVideoPlayer.playerClose(player);
+      player = undefined;
+
+      if (videoParent.hasChildNodes()) {
+        while (videoParent.hasChildNodes()) {
+          videoParent.removeChild(videoParent.firstChild);
+        }
+      }
+
+      createDMSVideo();
+    }
+
+  </script>
+</body>
+
+</html>

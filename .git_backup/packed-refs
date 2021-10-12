@@ -1,0 +1,27 @@
+# pack-refs with: peeled fully-peeled sorted 
+48a92c62f435991514552511cb541c7f033f8af9 refs/tags/jenkins-dms-video-player-1
+^388c86d146c75dd9e92df50722e6c59cacfd4635
+85418868d1d5f4910e8a29ef0f02887bc9a78a4b refs/tags/jenkins-dms-video-player-12
+^388c86d146c75dd9e92df50722e6c59cacfd4635
+e762fb8dc2ff7329bf09fef4dec7f79405042d2d refs/tags/jenkins-dms-video-player-13
+^388c86d146c75dd9e92df50722e6c59cacfd4635
+f1e6204a76426d184d944da59b649c4b8ec8864c refs/tags/jenkins-dms-video-player-14
+^388c86d146c75dd9e92df50722e6c59cacfd4635
+3dcdf904ec8b0ba63df2a9714ae02a827a0c4634 refs/tags/jenkins-dms-video-player-15
+^388c86d146c75dd9e92df50722e6c59cacfd4635
+8958b7d9f7b788d3697da0f2862e555e0fe7c6db refs/tags/jenkins-dms-video-player-18
+^13dbc8a318bc0d61142ddba0a0d3db251e22c965
+d2156f734753f5a4d975d7b4410a81af0bd1ecf3 refs/tags/jenkins-dms-video-player-2
+^388c86d146c75dd9e92df50722e6c59cacfd4635
+8e7ce659edc87e86830263a0cb54b89aa3af9143 refs/tags/jenkins-dms-video-player-3
+^388c86d146c75dd9e92df50722e6c59cacfd4635
+fa3e5c8a54ae4cc11535e52a0552a346c51b5d1c refs/tags/jenkins-dms-video-player-4
+^388c86d146c75dd9e92df50722e6c59cacfd4635
+5725e393d77ffbb94c99eb9a9729bf7d50b8ee71 refs/tags/jenkins-dms-video-player-5
+^388c86d146c75dd9e92df50722e6c59cacfd4635
+b720e75ecac82ed440a5bf1c818bbdb98069f2d0 refs/tags/jenkins-dms-video-player-6
+^388c86d146c75dd9e92df50722e6c59cacfd4635
+510daff6e0e971d5c9ecf16a16caa2f69e11225f refs/tags/jenkins-dms-video-player-7
+^388c86d146c75dd9e92df50722e6c59cacfd4635
+60272f02b32d8fcb96bf8b97f862a60801de29a8 refs/tags/jenkins-dms-video-player-9
+^388c86d146c75dd9e92df50722e6c59cacfd4635

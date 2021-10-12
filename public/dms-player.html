@@ -1,0 +1,115 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+  <meta charset="utf-8">
+  <title>dms-player pure javascript demo</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    li {
+      list-style: none;
+    }
+
+    ;
+
+  </style>
+</head>
+
+<body>
+  <!-- dms-player import -->
+  <!-- <script src="http://112.219.69.210:16789/js/dms-video-player.min.js"></script> -->
+  <script src="./dist/dms-video-player.js"></script>
+
+  <!-- dms-video adding parent element -->
+  <div>
+    <div id="video_parent" style="width: 720px; height: 406px; background: #222222; float: left;"></div>
+    <div id="input_div" style="float: left;">
+      <form name="frm">
+        <div>&nbsp;VMS Integrated ID:<br /> &nbsp;
+          <input type="text" name="vmsIntegratedId" value="1/AS-0001" /></div>
+      </form>
+      <div style="margin-top: 10px;">&nbsp;
+        <button onclick="createVideo();">dms-player 생성</button>
+        <button onclick="videoPlay();">재생</button>
+        <button onclick="videoStop();">정지</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- pure javascript start -->
+  <script>
+    let players = []; // init 에서 생성하는 비디오 태그 객체가 할당 될 변수 (test_video)
+
+    // dms-player 생성
+    function createVideo() {
+      let player;
+      // input validation 체크
+      // const emptyValue = isEmpty();
+      // if (!emptyValue) {
+      //   alert('video 생성시 필요한 옵션이 입력되지 않았습니다.');
+      //   return false;
+      // }
+
+      // 비디오 생성 옵션 정의
+      const videoOptions1 = {
+        'id': 'test_video', // 생성할 비디오 객체의 ID ( <video> Element ID )
+        'url': '', // 영상 요청 url로 나중에 확정된다
+        'srcType': '', // 원본 소스 타입으로 나중에 확정된다
+        'stream': 'ws://localhost:8080/media/api/v1/stream', // stream url
+        'vmsIntegratedId': document.forms['frm'].vmsIntegratedId.value, //'1/AS-0001' or '100375_1_0_0', //
+        'errorMsgFunc': errorMsgCallback // 에러 콜백 함수
+      };
+
+      // DMS Video Player 생성 API 호출
+      player = dmsVideoPlayer.createVideo(videoOptions1);
+
+      // DMS Video Player 가 들어갈 부모 DIV 영역 안으로 APPEND
+      document.getElementById('video_parent').appendChild(player);
+      players.push(player);
+
+    }
+
+    // 에러 메시지 처리 함수 (dms-player 내부 오류)
+    function errorMsgCallback(err) {
+      console.log(err);
+    }
+
+    // 빈값 체크
+    function isEmpty() {
+      let rtnBool = true;
+      if (document.forms['frm'].vmsId.value === "") {
+        rtnBool = false;
+      }
+      if (document.forms['frm'].devSerial.value === "") {
+        rtnBool = false;
+      }
+      if (document.forms['frm'].channel.value === "") {
+        rtnBool = false;
+      }
+      if (document.forms['frm'].media.value === "") {
+        rtnBool = false;
+      }
+      if (document.forms['frm'].token.value === "") {
+        rtnBool = false;
+      }
+      return rtnBool;
+    }
+
+    // 영상 재생
+    function videoPlay() {
+      for (let i = 0; i < players.length; i++)
+        dmsVideoPlayer.streamPlay(players[i]);
+    }
+
+    // 영상 정지
+    function videoStop() {
+      for (let i = 0; i < players.length; i++)
+        dmsVideoPlayer.streamStop(players[i]);
+    }
+
+  </script>
+</body>
+
+</html>

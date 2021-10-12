@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>URL 실시간 영상 생성</title>
+  <style>
+    .wrap {
+      position: relative;
+      width: 100%;
+      height: 500px;
+    }
+
+    #video_parent {
+      width: 640px;
+      height: 360px;
+      background: #ddd;
+    }
+
+    .right,
+    .left {
+      display: inline-block;
+      vertical-align: top;
+    }
+
+    form div span {
+      display: inline-block;
+      width: 100px;
+      vertical-align: top;
+    }
+
+    #player_ctrl>button:hover:not([disabled]) {
+      cursor: pointer;
+    }
+
+    .errMsgWrap {
+      width: 640px;
+      height: 155px;
+      overflow-y: auto;
+    }
+
+    .errMsgTitle {
+      padding: 5px;
+      height: 20px;
+      background: #ddd;
+      border: 1px solid;
+      border-bottom: 0;
+    }
+
+    #errMsgContent {
+      border: 1px solid;
+      padding: 5px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <h1>URL 실시간 영상 생성</h1>
+  <h3>
+    1. 플레이어 생성(vurix:///..., realhub:///..., rtsp://...)<br>
+    2. 재생<br>
+    3. 영상 출력
+  </h3>
+  <div class="wrap">
+    <div class="left">
+      <div id="video_parent"></div>
+      <div id="player_ctrl" style="margin-top:20px;">
+        <button id="player_ctrl_play" onclick="videoPlay()" disabled>재생</button>
+        <button id="player_ctrl_stop" onclick="videoStop()" disabled>정지</button>
+        <label id="playerStatus">:: 플레이어 생성안됨</label>
+      </div>
+    </div>
+    <!-- end left -->
+    <div class="right">
+      <form name="frm">
+        <fieldset>
+          <legend>영상 정보 입력</legend>
+          <div><span>URL</span></div>
+          <div><input type="text" name="url" style="width: 200px" value=""></div>
+          <div><span>transcode(-1,0,size)</span></div>
+          <div>
+            <select id="transcode_selector">
+              <option value="" selected>서버설정</option>
+              <option value="-1">미적용</option>
+              <option value="0">원본영상 크기</option>
+              <option value="32">32픽셀 넓이</option>
+              <option value="100">100픽셀 넓이</option>
+              <option value="200">200픽셀 넓이</option>
+              <option value="300">300픽셀 넓이</option>
+              <option value="400">400픽셀 넓이</option>
+              <option value="500">500픽셀 넓이</option>
+              <option value="600">600픽셀 넓이</option>
+              <option value="700">700픽셀 넓이</option>
+              <option value="800">800픽셀 넓이</option>
+              <option value="900">900픽셀 넓이</option>
+              <option value="1000">1000픽셀 넓이</option>
+            </select>
+          </div>
+          <button id="player_ctrl_create" onclick="createPlay()" style="margin-top:20px; float: right"
+            type="button">플레이어 생성</button>
+        </fieldset>
+      </form>
+    </div>
+    <!-- end right -->
+  </div>
+  <div class="errMsgWrap">
+    <div class="errMsgTitle">* Error Message (JSON)</div>
+    <div id="errMsgContent"></div>
+  </div>
+
+  <script src="dist/dms-video-player.js"></script>
+  <script>
+    let player;
+    let rtspUrl = "NotSet"
+    let proto = "NotSet"
+    let transcodeValue = -2;
+
+    function createPlay() {
+
+      errorMsgCallback('success')
+      let transcode = document.getElementById('transcode_selector').value;
+      transcode = transcode.trim()
+      if (transcode.length > 0) {
+        transcodeValue = Number(transcode)
+        if (transcodeValue != -1 && transcodeValue != 0 && transcodeValue < 32 && transcodeValue > 2000) {
+          errorMsgCallback(`invalid transcode value ${transcodeValue}`)
+          return
+        }
+      }
+
+      rtspUrl = document.forms['frm'].url.value
+      if (!rtspUrl || '' || null) {
+        document.getElementById('playerStatus').innerText = `:: RTSP URL 정보를 입력해 주세요.`
+        return false;
+      }
+      if (rtspUrl.search(/rtsp:\/\/[^\/]+/g) == 0) {
+        proto = "rtsp"
+      } else if (rtspUrl.search(/realhub:\/\/\/[^\/]+/g) == 0) {
+        proto = "realhub"
+      } else if (rtspUrl.search(/vurix:\/\/\/[^\/]+/g) == 0) {
+        proto = "vurix"
+      } else {
+        errorMsgCallback(`invalid url: ${rtspUrl}`)
+        return
+      }
+
+      let videoOptions = {
+        'id': 'test_video', // 생성할 비디오 객체의 ID ( <video> Element ID )
+        'url': rtspUrl, // 영상 요청 url
+        'srcType': proto, // 원본 소스 타입
+        'stream': 'ws://localhost:8080/media/api/v1/stream', // stream url
+        'errorMsgFunc': errorMsgCallback // 에러 콜백 함수
+      };
+
+      if (transcodeValue != -2) {
+        videoOptions.transcode = transcodeValue
+      }
+      console.log(videoOptions)
+
+      // DMS Video Player 생성 API 호출
+      player = dmsVideoPlayer.createVideo(videoOptions);
+
+      // DMS Video Player 가 들어갈 부모 DIV 영역 안으로 APPEND
+      document.getElementById('video_parent').appendChild(player);
+      document.getElementById('playerStatus').innerText = `:: ${rtspUrl} 생성됨`
+
+      // 플레이어 생성 버튼 disabled
+      document.getElementById('player_ctrl_create').disabled = true;
+      // 재생(play) 버튼 disabled 해제
+      document.getElementById('player_ctrl_play').disabled = false;
+
+    }
+
+    // 에러 메시지 처리 함수 (dms-player 내부 오류)
+    function errorMsgCallback(err) {
+      const errStr = JSON.stringify(err, null, 4);
+      document.getElementById('errMsgContent').innerText = errStr;
+    }
+
+    // 영상 재생
+    function videoPlay() {
+      if (player) {
+        dmsVideoPlayer.streamPlay(player);
+        document.getElementById('playerStatus').innerText = `:: ${rtspUrl} 재생중`
+
+        // 재생(play) 버튼 disabled
+        document.getElementById('player_ctrl_play').disabled = true;
+        // 재생(play) 버튼 disabled 해제
+        document.getElementById('player_ctrl_stop').disabled = false;
+      }
+    }
+
+    // 영상 정지
+    function videoStop() {
+      if (player) {
+        dmsVideoPlayer.streamStop(player);
+        document.getElementById('playerStatus').innerText = `:: ${rtspUrl} 정지`
+
+        // 재생(play) 버튼 disabled
+        document.getElementById('player_ctrl_play').disabled = false;
+        // 재생(play) 버튼 disabled 해제
+        document.getElementById('player_ctrl_stop').disabled = true;
+      }
+    }
+
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,49 @@
+{
+  "name": "dms-player",
+  "version": "1.0.0",
+  "main": "dist/dms-player.js",
+  "types": "dist/dms-player.d.ts",
+  "author": "TMS Platform Team, Ju Seongjin <jsj@innodep.com>",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/innodepdev/dms-player.git"
+  },
+  "keywords": [
+    "dms-player"
+  ],
+  "scripts": {
+    "build:prod": "npx webpack --mode production",
+    "build:dev": "npx webpack --mode development",
+    "build:min": "npx webpack --mode production --devtool none --output-filename=dms-player.min.js",
+    "build:doc": "tsc && jsdoc -c jsdoc.json",
+    "debug": "npx webpack-dev-server --mode development"
+  },
+  "devDependencies": {
+    "dts-bundle-webpack": "^1.0.2",
+    "html-webpack-plugin": "^3.2.0",
+    "jquery": "^3.4.1",
+    "source-map-loader": "^0.2.4",
+    "ts-loader": "^5.4.4",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-eslint-rules": "^5.4.0",
+    "tslint-react": "^4.0.0",
+    "typescript": "^3.6.2",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3"
+  },
+  "dependencies": {
+    "babel-polyfill": "^6.26.0",
+    "css-loader": "^1.0.1",
+    "docdash": "^1.1.1",
+    "file-loader": "^4.2.0",
+    "jsdoc": "^3.6.3",
+    "material-design-icons": "^3.0.1",
+    "moment": "^2.24.0",
+    "style-loader": "^1.0.0",
+    "text-encoding": "^0.7.0",
+    "typings-for-css-modules-loader": "^1.7.0",
+    "url-loader": "^2.1.0"
+  }
+}

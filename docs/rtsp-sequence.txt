@@ -1,0 +1,85 @@
+OPTIONS rtsp://172.22.51.11:554/1/stream1 RTSP/1.0
+CSeq: 2
+User-Agent: LibVLC/3.0.4 (LIVE555 Streaming Media v2016.11.28)
+
+RTSP/1.0 200 OK
+CSeq: 2
+Public: DESCRIBE, SETUP, TEARDOWN, PLAY, PAUSE, SET_PARAMETER, GET_PARAMETER, OPTIONS
+
+DESCRIBE rtsp://172.22.51.11:554/1/stream1 RTSP/1.0
+CSeq: 3
+User-Agent: LibVLC/3.0.4 (LIVE555 Streaming Media v2016.11.28)
+Accept: application/sdp
+
+RTSP/1.0 401 Unauthorized
+CSeq: 3
+WWW-Authenticate: Digest realm="HITRON_0007D8192659", nonce="MjAxOS0wNC0yMDE0OjIxOjA2", stale=FALSE
+WWW-Authenticate: Basic realm="HITRON_0007D8192659"
+
+DESCRIBE rtsp://172.22.51.11:554/1/stream1 RTSP/1.0
+CSeq: 4
+Authorization: Digest username="admin", realm="HITRON_0007D8192659", nonce="MjAxOS0wNC0yMDE0OjIxOjA2", uri="rtsp://172.22.51.11:554/1/stream1", response="c136cf7547498eb8ad69c5cae2bcec12"
+User-Agent: LibVLC/3.0.4 (LIVE555 Streaming Media v2016.11.28)
+Accept: application/sdp
+
+RTSP/1.0 200 OK
+CSeq: 4
+Content-Base: rtsp://172.22.51.11:554/1/stream1
+Content-Type: application/sdp
+Content-Length: 542
+
+v=0
+o=- 1 1 IN IP4 172.22.51.11
+s=RTSP Session
+c=IN IP4 0.0.0.0
+t=0 0
+a=control:*
+a=range:npt=now-
+m=video 0 RTP/AVP 96
+a=control:rtsp://172.22.51.11/1/stream1/video
+a=rtpmap:96 H264/90000
+a=fmtp:96 packetization-mode=1;profile-level-id=42e01f;sprop-parameter-sets=J0LgH41oBQBbkA==,KM4ESSA=
+a=recvonly
+m=audio 0 RTP/AVP 0
+a=control:rtsp://172.22.51.11/1/stream1/audio
+a=rtpmap:0 PCMU/8000/1
+a=recvonly
+m=application 0 RTP/AVP 98
+a=control:rtsp://172.22.51.11/1/stream1/meta
+a=rtpmap:98 vnd.onvif.metadata/90000
+a=recvonly
+SETUP rtsp://172.22.51.11/1/stream1/video RTSP/1.0
+CSeq: 5
+Authorization: Digest username="admin", realm="HITRON_0007D8192659", nonce="MjAxOS0wNC0yMDE0OjIxOjA2", uri="rtsp://172.22.51.11:554/1/stream1", response="44516f904ebac80d09f1e42c522040f3"
+User-Agent: LibVLC/3.0.4 (LIVE555 Streaming Media v2016.11.28)
+Transport: RTP/AVP/TCP;unicast;interleaved=0-1
+
+RTSP/1.0 200 OK
+CSeq: 5
+Session: 573107291;timeout=60
+Transport: RTP/AVP/TCP;unicast;interleaved=0-1;mode="PLAY"
+
+SETUP rtsp://172.22.51.11/1/stream1/audio RTSP/1.0
+CSeq: 6
+Authorization: Digest username="admin", realm="HITRON_0007D8192659", nonce="MjAxOS0wNC0yMDE0OjIxOjA2", uri="rtsp://172.22.51.11:554/1/stream1", response="44516f904ebac80d09f1e42c522040f3"
+User-Agent: LibVLC/3.0.4 (LIVE555 Streaming Media v2016.11.28)
+Transport: RTP/AVP/TCP;unicast;interleaved=2-3
+Session: 573107291
+
+RTSP/1.0 200 OK
+CSeq: 6
+Session: 573107291;timeout=60
+Transport: RTP/AVP/TCP;unicast;interleaved=2-3;mode="PLAY"
+
+PLAY rtsp://172.22.51.11:554/1/stream1 RTSP/1.0
+CSeq: 7
+Authorization: Digest username="admin", realm="HITRON_0007D8192659", nonce="MjAxOS0wNC0yMDE0OjIxOjA2", uri="rtsp://172.22.51.11:554/1/stream1", response="f826d0918b005327eb77333c751af5be"
+User-Agent: LibVLC/3.0.4 (LIVE555 Streaming Media v2016.11.28)
+Session: 573107291
+Range: npt=0.000-
+
+RTSP/1.0 200 OK
+CSeq: 7
+Session: 573107291
+Range: npt=now-
+RTP-Info: url=video;seq=1;rtptime=2168032223, url=audio;seq=1;rtptime=4001960925

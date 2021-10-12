@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>PTZ사용</title>
+  <link href="../css/jquery-ui.min.css" rel="stylesheet">
+  <link href="../css/jquery-ui-1.12.icon-font.min.css" rel="stylesheet">
+  <style>
+    #video_parent {
+      width: 640px;
+      height: 360px;
+      background: #ddd;
+    }
+
+    .right,
+    .left {
+      display: inline-block;
+      vertical-align: top;
+    }
+
+    form input {
+      width: calc(100% - 110px);
+    }
+
+    form div span {
+      display: inline-block;
+      width: 100px;
+      vertical-align: top;
+    }
+
+    ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    ul li {
+      display: inline-block;
+      vertical-align: top;
+    }
+
+    .ui-icon {
+      font-size: 6em;
+    }
+
+    .move-controller,
+    .zoom-controller,
+    .focus-controller {
+      width: 160px;
+      font-size: 20px;
+    }
+
+    .move-controller button,
+    .zoom-controller button,
+    .focus-controller button {
+      width: 40px;
+      height: 40px;
+    }
+
+    .zoom-controller .title {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+  </style>
+
+</head>
+
+<body>
+  <h1>PTZ 제어하기</h1>
+  <h2>
+    VURIX 서버 로그인후 플레이어 생성 가능
+  </h2>
+  <div style="position:relative; width:100%; height:500px">
+    <div class="left">
+      <div id="video_parent"></div>
+      <div style="margin-top:20px;">
+        <button onclick="videoPlay()">재생</button>
+        <button onclick="videoStop()">정지</button>
+        <label id="playerStatus">:: 플레이어 생성안됨</label>
+      </div>
+    </div>
+
+    <div class="right">
+      <form name="frm">
+        <fieldset>
+          <legend>영상 정보 입력</legend>
+          <div><span>VMS ID </span> <input type="text" name="vmsId" value="100503" /></div>
+          <div><span>DEV Serial </span> <input type="text" name="devSerial" value="1" /></div>
+          <div><span>Channel </span> <input type="text" name="channel" value="0" /></div>
+          <div><span>Media </span> <input type="text" name="media" value="0" /></div>
+          <div><span>Token </span> <input type="text" name="token" value="" /></div>
+          <button onclick="createPlay()" style="margin-top:20px; float: right" type="button">플레이어 생성</button>
+        </fieldset>
+      </form>
+      <table>
+        <tr>
+          <td>
+            <ul>
+              <li>
+                <div class="move-controller">
+                  <span>Move Controller</span>
+                  <button onclick="ptzControl('left-up')">
+                    <span class="ui-icon ui-icon-caret-1-nw"></span>
+                  </button>
+                  <button onclick="ptzControl('up')">
+                    <span class="ui-icon ui-icon-caret-1-n"></span>
+                  </button>
+                  <button onclick="ptzControl('right-up')">
+                    <span class="ui-icon ui-icon-caret-1-ne"></span>
+                  </button>
+                </div>
+              </li><br />
+              <li>
+                <div class="focus-controller">
+                  <button onclick="ptzControl('left')">
+                    <span class="ui-icon ui-icon-caret-1-w"></span>
+                  </button>
+                  <button onclick="ptzControlStop()">
+                    stop
+                  </button>
+                  <button onclick="ptzControl('right')">
+                    <span class="ui-icon ui-icon-caret-1-e"></span>
+                  </button>
+                </div>
+              </li><br />
+              <li>
+                <div class="focus-controller">
+                  <button onclick="ptzControl('left-down')">
+                    <span class="ui-icon ui-icon-caret-1-sw"></span>
+                  </button>
+                  <button onclick="ptzControl('down')">
+                    <span class="ui-icon ui-icon-caret-1-s"></span>
+                  </button>
+                  <button onclick="ptzControl('right-down')">
+                    <span class="ui-icon ui-icon-caret-1-se"></span>
+                  </button>
+                </div>
+              </li>
+            </ul>
+          </td>
+          <td valign="top">
+            <ul>
+              <li>
+                <div class="zoom-controller">
+                  <span class="title">&nbsp;PTZ &nbsp;ZOOM FOCUS</span>
+                  <button onclick="ptzModeOn()">
+                    <span>on</span>
+                  </button>
+                  <button onclick="videoZoomOut()">
+                    <span class="ui-icon ui-icon-zoomout"></span>
+                  </button>
+                  <button onclick="videoFocusOut()">
+                    <span class="ui-icon ui-icon-radio-off"></span>
+                  </button>
+                </div>
+              </li><br />
+              <li>
+                <div class="focus-controller">
+                  <button disabled>
+                    <span class="ui-icon ui-icon-stop"></span>
+                  </button>
+                  <button onclick="ptzControlStop()">
+                    <span class="ui-icon ui-icon-stop"></span>
+                  </button>
+                  <button onclick="ptzControlStop()">
+                    <span class="ui-icon ui-icon-stop"></span>
+                  </button>
+                </div>
+              </li><br />
+              <li>
+                <div class="focus-controller">
+                  <button onclick="ptzModeOff()">
+                    <span>off</span>
+                  </button>
+                  <button onclick="videoZoomIn()">
+                    <span class="ui-icon ui-icon-zoomin"></span>
+                  </button>
+                  <button onclick="videoFocusIn()">
+                    <span class="ui-icon ui-icon-bullet"></span>
+                  </button>
+                </div>
+              </li>
+            </ul>
+          </td>
+        </tr>
+      </table>
+
+    </div>
+  </div>
+  <script src="../js/jquery-3.4.1.slim.js"></script>
+  <script src="../js/jquery-ui.min.js"></script>
+  <script src="./dist/dms-video-player.js"></script>
+  <script>
+    let player;
+    let vmsIntegratedId;
+
+    function createPlay() {
+
+      // 비디오 생성 옵션 정의
+      vmsIntegratedId = document.forms['frm'].vmsId.value + '_' + document.forms['frm'].devSerial.value + '_' +
+        document.forms['frm'].channel.value + '_' + document.forms['frm'].media.value;
+
+      const videoOptions = {
+        'id': 'test_video', // 생성할 비디오 객체의 ID ( <video> Element ID )
+        'url': 'play-url', // 영상 요청 url
+        'srcType': 'vurix', // 원본 소스 타입
+        'stream': 'ws://localhost:8080/media/api/v1/stream', // stream url
+        'vmsIntegratedId': vmsIntegratedId,
+        'transcode': 0,
+        'token': document.forms['frm'].token.value,
+        'errorMsgFunc': errorMsgCallback // 에러 콜백 함수
+      };
+      // DMS Video Player 생성 API 호출
+      player = dmsVideoPlayer.createVideo(videoOptions);
+      // DMS Video Player 가 들어갈 부모 DIV 영역 안으로 APPEND
+      document.getElementById('video_parent').appendChild(player);
+      document.getElementById('playerStatus').innerText = `:: ${vmsIntegratedId} 생성됨`
+    }
+    // 에러 메시지 처리 함수 (dms-player 내부 오류)
+    function errorMsgCallback(err) {
+      console.log(err);
+    }
+
+    // 영상 재생
+    function videoPlay() {
+      if (player) {
+        dmsVideoPlayer.streamPlay(player);
+        document.getElementById('playerStatus').innerText = `:: ${vmsIntegratedId} 재생중`
+      }
+    }
+
+    // 영상 정지
+    function videoStop() {
+      if (player) {
+        dmsVideoPlayer.streamStop(player);
+        document.getElementById('playerStatus').innerText = `:: ${vmsIntegratedId} 정지`
+      }
+    }
+
+    // 영상 방향제어
+    function ptzControl(target) {
+      // pan, tilt speed
+      // ptz option x, y 좌표 zoom 처리 등 추가
+      const ptzSpeed = 4;
+      switch (target) {
+        case 'left-up':
+          dmsVideoPlayer.ptzUpLeft(player, ptzSpeed);
+          break;
+        case 'up':
+          dmsVideoPlayer.ptzUp(player, ptzSpeed);
+          break;
+        case 'right-up':
+          dmsVideoPlayer.ptzUpRight(player, ptzSpeed);
+          break;
+        case 'left':
+          dmsVideoPlayer.ptzLeft(player, ptzSpeed);
+          break;
+        case 'right':
+          dmsVideoPlayer.ptzRight(player, ptzSpeed);
+          break;
+        case 'left-down':
+          dmsVideoPlayer.ptzDownLeft(player, ptzSpeed);
+          break;
+        case 'down':
+          dmsVideoPlayer.ptzDown(player, ptzSpeed);
+          break;
+        case 'right-down':
+          dmsVideoPlayer.ptzDownRight(player, ptzSpeed);
+          break;
+        default:
+          break;
+      }
+    }
+
+    // 정지 (모든동작 취소)
+    function ptzControlStop() {
+      dmsVideoPlayer.ptzStop(player);
+    }
+
+    function videoFocusIn() {
+      dmsVideoPlayer.ptzFocusIn(player);
+    }
+
+    function videoFocusOut() {
+      dmsVideoPlayer.ptzFocusOut(player);
+    }
+
+    function videoZoomIn() {
+      dmsVideoPlayer.ptzZoomIn(player);
+    }
+
+    function videoZoomOut() {
+      dmsVideoPlayer.ptzZoomOut(player);
+    }
+
+    async function ptzModeOn() {
+      const rslt = await dmsVideoPlayer.ptzModeOn(player);
+      document.getElementById('playerStatus').innerText = `:: ${vmsIntegratedId} PTZ 잠금 ${rslt}`
+    }
+
+    async function ptzModeOff() {
+      const rslt = await dmsVideoPlayer.ptzModeOff(player);
+      document.getElementById('playerStatus').innerText = `:: ${vmsIntegratedId} PTZ 잠금해제 ${rslt}`
+    }
+
+  </script>
+</body>
+
+</html>

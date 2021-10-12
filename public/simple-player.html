@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>vurix 실시간 영상 생성</title>
+  <style>
+    .wrap {
+      position: relative;
+      width: 100%;
+      height: 500px;
+    }
+
+    #video_parent {
+      width: 640px;
+      height: 360px;
+      background: #ddd;
+    }
+
+    .right,
+    .left {
+      display: inline-block;
+      vertical-align: top;
+    }
+
+    form div span {
+      display: inline-block;
+      width: 100px;
+      vertical-align: top;
+    }
+
+  </style>
+</head>
+
+<body>
+  <h1>VURIX 실시간 영상 생성</h1>
+  <h3>
+    1. 플레이어 생성<br>
+    2. 재생<br>
+    3. 영상 출력
+  </h3>
+  <div class="wrap">
+    <div class="left">
+      <div id="video_parent"></div>
+      <div style="margin-top:20px;">
+        <button onclick="videoPlay()">재생</button>
+        <button onclick="videoStop()">정지</button>
+        <label id="playerStatus">:: 플레이어 생성안됨</label>
+      </div>
+    </div>
+
+    <div class="right">
+      <form name="frm">
+        <fieldset>
+          <legend>영상 정보 입력</legend>
+          <div><span>VMS ID </span> <input type="text" name="vmsId" value="100869" /></div>
+          <div><span>DEV Serial </span> <input type="text" name="devSerial" value="1" /></div>
+          <div><span>Channel </span> <input type="text" name="channel" value="0" /></div>
+          <div><span>Media </span> <input type="text" name="media" value="0" /></div>
+          <div><span>Token </span> <input type="text" name="token" value="" /></div>
+          <button onclick="createPlay()" style="margin-top:20px; float: right" type="button">플레이어 생성</button>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+  <script src="./dist/dms-video-player.js"></script>
+  <script>
+    let player;
+
+    let vmsUrl;
+
+    function createPlay() {
+
+      vmsUrl = 'vurix://'
+      if (document.forms['frm'].token.value.length > 0) {
+        vmsUrl = vmsUrl + document.forms['frm'].token.value + '@'
+      }
+      vmsUrl = vmsUrl + '/' + document.forms['frm'].vmsId.value + '/' + document.forms['frm'].devSerial.value + '/' +
+        document.forms['frm'].channel.value + '/' + document.forms['frm'].media.value;
+
+      // 비디오 생성 옵션 정의
+      const videoOptions = {
+        'id': 'test_video', // 생성할 비디오 객체의 ID ( <video> Element ID )
+        'url': vmsUrl, // 영상 요청 url
+        'srcType': 'vurix', // 원본 소스 타입
+        'stream': 'ws://172.16.36.109:8080/media/api/v1/stream', // stream url
+        'transcode': -1,
+        'errorMsgFunc': errorMsgCallback // 에러 콜백 함수
+      };
+
+      console.log(videoOptions)
+
+      // DMS Video Player 생성 API 호출
+      player = dmsVideoPlayer.createVideo(videoOptions);
+
+      // DMS Video Player 가 들어갈 부모 DIV 영역 안으로 APPEND
+      document.getElementById('video_parent').appendChild(player);
+      document.getElementById('playerStatus').innerText = `:: ${vmsUrl} 생성됨`
+    }
+
+    // 에러 메시지 처리 함수 (dms-player 내부 오류)
+    function errorMsgCallback(err) {
+      console.log(err);
+    }
+
+    // 영상 재생
+    function videoPlay() {
+      if (player) {
+        dmsVideoPlayer.streamPlay(player);
+        document.getElementById('playerStatus').innerText = `:: ${vmsUrl} 재생중`
+      }
+    }
+
+    // 영상 정지
+    function videoStop() {
+      if (player) {
+        dmsVideoPlayer.streamStop(player);
+        document.getElementById('playerStatus').innerText = `:: ${vmsUrl} 정지`
+      }
+    }
+
+  </script>
+</body>
+
+</html>

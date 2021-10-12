@@ -1,0 +1,254 @@
+/*::ng-deep video::-webkit-media-controls {
+	 display:none !important;
+}
+*/
+/* timeline */
+.video-in-control .vis-itemset .vis-foreground {
+    background: transparent;
+}
+.video-in-control .vis-timeline {
+    border: 0px !important;
+}
+.video-in-control .time_line {
+    height: 2vh;
+    overflow: hidden;
+}
+.video-in-control .vis-timeline {
+    border: 0px;
+    overflow: visible !important;
+}
+.video-in-control .vis-panel.vis-center {
+    border: 0px !important;
+    top: 0px !important;
+    height: 38px !important;
+}
+.video-in-control .vis-panel .vis-shadow {
+    visibility: hidden;
+}
+.video-in-control .vis-time-axis {
+    overflow: visible !important;
+}
+.video-in-control .vis-time-axis .vis-text {
+    color: #888 !important;
+    margin-top: 10px;
+}
+.video-in-control .vis-item {
+    background-color: #fff !important;
+}
+.video-in-control .vis-item.vis-dot {
+    width: 5px;
+    height: 5px;
+    border-width: 6px !important;
+    border-radius: 11px !important;
+}
+.video-in-control .vis-foreground .vis-group:last-child {
+    border-bottom: 8px solid #bfbfbf;
+}
+.video-in-control .vis-item.vis-box, .video-in-control .vis-item.vis-line {
+    visibility: hidden;
+    display: none;
+}
+.video-in-control .vis-current-time {
+    width: 3px !important;
+    margin-top: -7px;
+    display: none;
+}
+.video-in-control .vis-time-axis .vis-grid.vis-vertical {
+    border-left: none;
+}
+.video-in-control .vis-foreground .vis-group {
+    height: 33px !important;
+}
+.video-in-control .vis-custom-time {
+    background-color: #ff7f6e !important;
+    z-index: 10 !important;
+    top: 17px !important;
+    width: 10px !important;
+    height: 10px !important;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+.video-in-control .vis-custom-time:hover {
+    transform: scale(1.5);
+}
+.video-in-control .vis-panel.vis-bottom, .video-in-control .vis-timeline {
+    border: 0px !important;
+}
+.video-in-control .vis-item.vis-range {
+    height: 8px !important;
+    top: 25px !important;
+}
+.video-in-control .vis-item .vis-item-overflow {
+    background: #97b0f8;
+}
+.video-in-control .vis-panel > .vis-content {
+    top: -1px !important;
+}
+.video-in-control .vis-item .vis-item-content {
+    padding: 0px !important;
+}
+.playback-dp input {
+    text-align: center;
+}
+.video-box {
+    position: relative;
+    overflow: hidden;
+}
+.video-box:hover .in-control-box {
+    opacity: 1;
+    bottom: 0;
+}
+.video-box #mytimeline {
+    margin-top: -4px;
+}
+.in-control-box {
+    background: rgba(0, 0, 0, .7);
+    height: 10vh;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    color: #fff;
+    z-index: 1;
+    transition: 0.8s ease;
+    opacity: 1;
+}
+.in-control-box > div.side {
+    height: 100%;
+    width: 65px;
+    display: inline-block;
+    vertical-align: top;
+}
+@media (max-width: 500px) {
+    .in-control-box > div.side {
+        width: 35px;
+    }
+}
+.in-control-box > div.side i {
+    margin-left: 10px;
+}
+.in-control-box > div.side.side-left {
+    height: 100%;
+    text-align: left;
+    margin-right: 10px;
+}
+@media (max-width: 500px) {
+    .in-control-box > div.side.side-left .fa-clock-o {
+        display: none;
+    }
+}
+.in-control-box > div.side.side-right {
+    height: 100%;
+    text-align: right;
+}
+@media (max-width: 500px) {
+    .in-control-box > div.side.side-right .fa-cog {
+        display: none;
+    }
+}
+.in-control-box > div.timeLine {
+    width: calc(100% - 165px);
+    display: inline-block;
+    vertical-align: top;
+}
+@media (max-width: 500px) {
+    .in-control-box > div.timeLine {
+        width: calc(100% - 90px);
+    }
+}
+.in-control-box > div i {
+    text-align: center;
+    margin-top: 1.2vh;
+    cursor: pointer;
+}
+.time-inout-box {
+    position: absolute;
+    width: 278px;
+    height: 6vh;
+    background: rgba(0, 0, 0, 0.7);
+    bottom: 10vh;
+    padding: 1vh;
+}
+@media (max-width: 500px) {
+    .time-inout-box {
+        display: none;
+    }
+}
+@media (max-width: 759px) {
+    .time-inout-box {
+        width: 271px;
+    }
+}
+.set-box {
+    position: absolute;
+    width: 170px;
+    bottom: 10vh;
+    right: 0;
+    padding: 1vh;
+    height: 32vh;
+    color: #fff;
+    overflow: hidden;
+}
+@media (max-width: 500px) {
+    .set-box {
+        display: none;
+    }
+}
+.set-box .move-box {
+    width: 340px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    transition: 0.5s ease;
+}
+.set-box .move-box.right {
+    left: -170px;
+}
+.set-box .move-box ul {
+    background: rgba(0, 0, 0, 0.7);
+    min-height: 2vh;
+    display: inline-block;
+    vertical-align: bottom;
+    padding: 2vh 1vh;
+    width: 170px;
+    padding-left: 10px;
+    list-style: none;
+    margin-bottom: 0;
+}
+.set-box .move-box ul .fa-chevron-right {
+    margin-top: 5px;
+}
+.set-box .move-box ul.subList li {
+    cursor: pointer;
+    text-align: center;
+}
+.set-box .move-box ul.subList li:first-child {
+    cursor: default;
+}
+.set-box .move-box ul.subList li:first-child:hover {
+    background: transparent;
+}
+.set-box .move-box ul.subList li:hover {
+    background: #950b02;
+}
+.set-box .move-box ul.subList li.active {
+    color: #950b02;
+    font-weight: bold;
+}
+.set-box .move-box ul.subList li.active:hover {
+    color: #000;
+}
+.set-box .move-box ul span {
+    margin-left: 2rem;
+}
+.set-box .move-box ul i {
+    margin-left: 1rem;
+    vertical-align: text-bottom;
+    cursor: pointer;
+}
+.set-box .move-box ul i.sub {
+    margin-left: 0;
+    float: left;
+}

@@ -1,0 +1,40 @@
+/* custom control */
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url(./iconfont/MaterialIcons-Regular.eot); /* For IE6-8 */
+  src: local('Material Icons'),
+  local('MaterialIcons-Regular'),
+  url(./iconfont/MaterialIcons-Regular.woff2) format('woff2'),
+  url(./iconfont/MaterialIcons-Regular.woff) format('woff'),
+  url(./iconfont/MaterialIcons-Regular.ttf) format('truetype');
+}
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+}
+
+/* cross point */
+.center-point { position: absolute; width: 10px; height: 10px; top: 50%; left: 50%; transform: translate(-50%, -50%);}
+.cross-box { position: relative; width: 100%; height: 100%;}
+.cross-vertical { position: absolute; left:0; right:0; margin-left:auto; margin-right:auto; height: 100%; width: 2px; }
+.cross-horizontal{ position:absolute; top:0; bottom:0; margin-top:auto; margin-bottom:auto; height:2px; width:100%; }

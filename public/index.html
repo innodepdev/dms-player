@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>HTML5 RTSP player example</title>
+    <style>
+      #test_video {
+        width: 720px;
+      }
+
+      .video {
+        width: 720px;
+        height: 405px;
+        background-color: black;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="controls form">
+      <div>
+        <button id="startStream" class="btn btn-success">start</button>
+        <button id="stopStream" class="btn btn-success">pause</button>
+        <button id="closeStream" class="btn btn-success">close</button>
+        <button id="syncStream" class="btn btn-success">sync</button>
+      </div>
+    </div>
+    <br />
+    <div id="video_parent" class="controls video"></div>
+
+    <script src="dist/stream-player.js"></script>
+    <script>
+      let parent = document.getElementById("video_parent");
+      // let rtspsource = document.createElement("source");
+      // rtspsource.src = "rtsp://admin:[P@ssw0rd]@172.22.51.251/profile2/media.smp";
+      // rtspsource.src = "rtsp://admin:admin@172.22.51.11/1/stream1";
+
+      let startStream = document.getElementById("startStream");
+      let stopStream = document.getElementById("stopStream");
+      let closeStream = document.getElementById("closeStream");
+      let syncStream = document.getElementById("syncStream");
+
+      startStream.addEventListener("click", () => {
+        let player = document.getElementById("test_video");
+        if (player) {
+          if (!player.paused) {
+            player.pause();
+          }
+          player.parentNode.removeChild(player);
+        }
+
+        player = document.createElement("video");
+        player.id = "test_video";
+        parent.appendChild(player);
+        PlayerControl.player(player, {
+          url: "rtsp://admin:[P@ssw0rd]@172.22.51.252/profile2/media.smp",
+          socket: "ws://localhost:3000/stream",
+        });
+
+        player.play();
+      });
+
+      stopStream.addEventListener("click", () => {
+        let player = document.getElementById("test_video");
+        player.pause();
+      });
+
+      closeStream.addEventListener("click", () => {
+        let player = document.getElementById("test_video");
+        if (player) {
+          if (!player.paused) {
+            player.pause();
+          }
+          player.parentNode.removeChild(player);
+        }
+      });
+
+      syncStream.addEventListener("click", () => {
+        let player = document.getElementById("test_video");
+        if (player) {
+          player.playbackRate = 1;
+          player.currentTime = player.buffered.end(0);
+        }
+      });
+
+      // setInterval(() => {
+      //   let player = document.getElementById("test_video");
+      //   console.log('sync', player.currentTime, player.buffered)
+
+      //   // if (player) {
+      //   //   player.playbackRate = 1;
+      //   //   player.currentTime = player.buffered.end(0);
+      //   // }
+      // }, 1000);
+    </script>
+  </body>
+</html>

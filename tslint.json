@@ -1,0 +1,84 @@
+{
+  "extends": [
+    "tslint:latest",
+    "tslint-react",
+    "tslint-eslint-rules",
+    "tslint-config-prettier"
+  ],
+  "rules": {
+    "quotemark": [
+      true,
+      "single",
+      "jsx-double"
+    ],
+    "trailing-comma": [
+      true,
+      "always"
+    ],
+    "no-string-literal": false,
+    "object-literal-sort-keys": false,
+    "no-bitwise": false,
+    "no-console": [
+      true,
+      "debug",
+      "info",
+      "time",
+      "timeEnd",
+      "trace"
+    ],
+    "curly": false,
+    "variable-name": [
+      true,
+      "ban-keywords"
+    ],
+    "no-implicit-dependencies": [
+      true,
+      "dev"
+    ],
+    "interface-name": false,
+    "no-empty-interface": false,
+    "no-shadowed-variable": false,
+    "jsx-no-lambda": false,
+    "semicolon": true,
+    "max-classes-per-file": [
+      true,
+      5,
+      "exclude-class-expressions"
+    ],
+    "member-ordering": [
+      true,
+      {
+        "order": [
+          "private-static-field",
+          "private-instance-field",
+
+          "public-static-field",
+          "public-instance-field",
+
+          "public-constructor",
+          "private-constructor",
+          "public-instance-method",
+          "protected-instance-method",
+          "private-instance-method"
+        ]
+      }
+    ],
+    "no-var-requires": true,
+    "no-this-assignment": [true, {
+      "allowed-names": ["^self$"],
+      "allow-destructuring": true
+    }],
+    "one-variable-per-declaration": false,
+    "max-line-length": [
+      false
+    ],
+    "jsdoc-format": true
+  },
+  "jsRules": {
+    "quotemark": [
+      true,
+      "single"
+    ],
+    "object-literal-sort-keys": false
+  }
+}

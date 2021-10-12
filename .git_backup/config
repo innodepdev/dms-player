@@ -1,0 +1,12 @@
+[core]
+	repositoryformatversion = 0
+	filemode = false
+	bare = false
+	logallrefupdates = true
+	symlinks = false
+	ignorecase = true
+[submodule]
+	active = .
+[remote "origin"]
+	url = https://github.com/innodepdev/dms-video-player.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
