@@ -1,6 +1,6 @@
 ## 💬 DMS Video Player?
 
-DMS Video Player 란 [**이노뎁(주)**](http://www.innodep.com/)의 VURIX DMS Essential 프로젝트 중 CCTV영상에 대한 웹브라우저 재생을 목적으로 개발된, 영상 연동 모듈입니다.
+DMS Player 란 [**이노뎁(주)**](http://www.innodep.com/)의 VURIX DMS Essential 프로젝트 중 CCTV영상에 대한 웹브라우저 재생을 목적으로 개발된, 영상 연동 모듈입니다.
 
 ## 💬 특징
 
