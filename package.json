@@ -1,6 +1,6 @@
 {
   "name": "dms-player",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "main": "dist/dms-player.js",
   "types": "dist/dms-player.d.ts",
   "author": "TMS Platform Team, Ju Seongjin <jsj@innodep.com>",
@@ -30,7 +30,6 @@
     "tslint-eslint-rules": "^5.4.0",
     "tslint-react": "^4.0.0",
     "typescript": "^3.6.2",
-    "typescript-declaration-webpack-plugin": "^0.2.2",
     "uglifyjs-webpack-plugin": "^2.2.0",
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11",

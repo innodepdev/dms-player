@@ -4,7 +4,7 @@ const path = require('path');
 
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
-const TypescriptDeclarationPlugin = require('typescript-declaration-webpack-plugin');
+const DtsBundleWebpack = require('dts-bundle-webpack');
 
 module.exports = {
   entry: './src/api/dms-player.ts',
@@ -46,9 +46,12 @@ module.exports = {
     }),
     new CleanWebpackPlugin(),
     new UglifyJSPlugin(),
-    new TypescriptDeclarationPlugin({   // d.ts 파일 생성
-      out: 'dms-player.d.ts'
-    })
+    new DtsBundleWebpack({
+      name: 'dms-player',
+      main: path.resolve(__dirname, './build/api/dms-player.d.ts'),
+      baseDir: 'build',
+      out: path.resolve(__dirname, './dist/dms-player.d.ts'),
+    }),
   ],
   devServer: {
     clientLogLevel: 'info',
