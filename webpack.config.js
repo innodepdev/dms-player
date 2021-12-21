@@ -1,7 +1,10 @@
 /* eslint-disable no-undef */
 const webpack = require('webpack');
 const path = require('path');
-const DtsBundleWebpack = require('dts-bundle-webpack');
+
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const TypescriptDeclarationPlugin = require('typescript-declaration-webpack-plugin');
 
 module.exports = {
   entry: './src/api/dms-player.ts',
@@ -41,12 +44,11 @@ module.exports = {
       $: 'jquery/src/jquery',
       jquery: 'jquery/src/jquery',
     }),
-    new DtsBundleWebpack({
-      name: 'dms-player',
-      main: path.resolve(__dirname, './build/api/dms-player.d.ts'),
-      baseDir: 'build',
-      out: path.resolve(__dirname, './dist/dms-player.d.ts'),
-    }),
+    new CleanWebpackPlugin(),
+    new UglifyJSPlugin(),
+    new TypescriptDeclarationPlugin({   // d.ts 파일 생성
+      out: 'dms-player.d.ts'
+    })
   ],
   devServer: {
     clientLogLevel: 'info',

@@ -324,6 +324,7 @@ export function createVideo(options: any, videoEl?: HTMLVideoElement) {
     if (
       !options.url.startsWith('vurix://') &&
       !options.url.startsWith('realhub://') &&
+      !options.url.startsWith('cinderella://') &&
       !options.url.startsWith('rtsp://')
     ) {
       if (options['vmsIntegratedId']) {

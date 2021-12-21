@@ -140,6 +140,8 @@
         proto = "realhub"
       } else if (rtspUrl.search(/vurix:\/\/\/[^\/]+/g) == 0) {
         proto = "vurix"
+      } else if (rtspUrl.search(/cinderella:\/\/\/[^\/]+/g) == 0) {
+        proto = "cinderella"
       } else {
         errorMsgCallback(`invalid url: ${rtspUrl}`)
         return
