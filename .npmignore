@@ -18,3 +18,4 @@ jsdoc.json
 tsconfig.json
 tslint.json
 webpack.config.js
+webpack.config.min.js
