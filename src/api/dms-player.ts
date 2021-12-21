@@ -1,4 +1,3 @@
-import 'babel-polyfill';
 import $ from 'jquery';
 import { playDateTime } from '../client/stream/ws-stream-client';
 import { DateUtil } from '../common/date-util';
