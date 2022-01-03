@@ -884,7 +884,7 @@ export async function playbackPlay(player: HTMLVideoElement, startDate?: number,
     dtsTimeReset();
     const sourceType = player.getAttribute('srcType');
     // video type 분기 처리
-    if (sourceType === 'realhub' || sourceType === 'vurix') {
+    if (sourceType === 'realhub' || sourceType === 'vurix' || sourceType === 'cinderella') {
       // realuub 인 경우 실시간 요청과 같은 형태
       const evt = new CustomEvent('streamPlay', {
         detail: {
@@ -1248,7 +1248,7 @@ export async function ptzModeOn(player: HTMLVideoElement, playerUrl: string) {
         img.style.width = '100%';
         img.style.height = '100%';
         img.style.zIndex = '100';
-        img.src = `${mjpegUrlStr}/${playerInfo['vmsType']}/${player.id.split('_')[1]}`;
+        img.src = `${mjpegUrlStr}/${playerInfo['vmsType']}/${playerUrl.split('///')[1]}`;
         player.parentElement.append(img);
 
         return true;
@@ -1314,7 +1314,6 @@ export async function ptzModeOff(player: HTMLVideoElement, playerUrl: string) {
             }
           });
         }
-
         return true;
       } else {
         return false;
