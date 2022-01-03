@@ -533,7 +533,7 @@ export function createAreaZoom(player: HTMLVideoElement, color?: string) {
         endX,
         endY,
       };
-      this.ptzAreaZoom(player, rtnInfo);
+      ptzAreaZoom(player, rtnInfo);
     });
 
     canvas.addEventListener('mousemove', (e) => {
@@ -603,7 +603,7 @@ export function createPointMove(player: HTMLVideoElement) {
         endX: startX,
         endY: startY,
       };
-      this.ptzAreaZoom(player, rtnInfo, true);
+      ptzAreaZoom(player, rtnInfo, true);
     });
 
     return canvas;
