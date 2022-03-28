@@ -117,7 +117,7 @@ export abstract class BaseClient {
     this.playbackOpt = playbackOpt;
   }
 
-  public getPlaybackOpt() {
+  public async getPlaybackOpt() {
     return this.playbackOpt;
   }
 

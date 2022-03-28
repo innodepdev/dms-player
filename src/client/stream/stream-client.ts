@@ -46,7 +46,7 @@ export default class StreamClient extends BaseClient {
 
   public destroy() {
     Log.info('WebSocket Destroy');
-    this.streamClient.close();
+    this.streamClient.close().then();
     return super.destroy();
   }
 
@@ -57,7 +57,7 @@ export default class StreamClient extends BaseClient {
         if (await this.streamClient.start.call(this.streamClient)) {
           this.onConnected();
         } else {
-          throw new Error('connection failed to service');
+          Log.error('connection failed to service to start');
         }
       }
     } catch (error) {
@@ -84,7 +84,7 @@ export default class StreamClient extends BaseClient {
         if (await this.streamClient.start.call(this.streamClient)) {
           this.onConnected();
         } else {
-          throw new Error('connection failed to service');
+          Log.error('connection failed to service to start play back');
         }
       }
     } catch (error) {
@@ -98,7 +98,7 @@ export default class StreamClient extends BaseClient {
         reqDate = reqDates.shift();
         await super.setPlaybackOpt(reqDates);
       } else {
-        reqDate = await super.getPlaybackOpt().shift();
+        reqDate = (await super.getPlaybackOpt()).shift();
         await super.setPlaybackOpt(await super.getPlaybackOpt());
       }
       await this.streamClient.requestPlaybackStart.call(this.streamClient, reReq, reqDate, endDate, speed); // 분할 요청 시간 첫번째 요청.
@@ -159,8 +159,9 @@ export default class StreamClient extends BaseClient {
         if (await this.streamClient.start.call(this.streamClient)) {
           this.onConnected();
         } else {
-          throw new Error('connection failed to service');
+          Log.error('connection failed to service to start time line');
         }
+        return await this.streamClient.requestTimeline.call(this.streamClient, timeInfo);
       }
     } catch (error) {
       Log.error(`error while start: ${error}`);

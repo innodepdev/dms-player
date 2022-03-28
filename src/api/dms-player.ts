@@ -533,7 +533,7 @@ export function createAreaZoom(player: HTMLVideoElement, color?: string) {
         endX,
         endY,
       };
-      ptzAreaZoom(player, rtnInfo);
+      this.ptzAreaZoom(player, rtnInfo);
     });
 
     canvas.addEventListener('mousemove', (e) => {
@@ -603,7 +603,7 @@ export function createPointMove(player: HTMLVideoElement) {
         endX: startX,
         endY: startY,
       };
-      ptzAreaZoom(player, rtnInfo, true);
+      this.ptzAreaZoom(player, rtnInfo, true);
     });
 
     return canvas;
@@ -1248,7 +1248,7 @@ export async function ptzModeOn(player: HTMLVideoElement, playerUrl: string) {
         img.style.width = '100%';
         img.style.height = '100%';
         img.style.zIndex = '100';
-        img.src = `${mjpegUrlStr}/${playerInfo['vmsType']}/${playerUrl.split('///')[1]}`;
+        img.src = `${mjpegUrlStr}/${playerInfo['vmsType']}/${player.id.split('_')[1]}`;
         player.parentElement.append(img);
 
         return true;

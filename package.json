@@ -1,6 +1,6 @@
 {
   "name": "dms-player",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "main": "dist/dms-player.js",
   "types": "dist/dms-player.d.ts",
   "author": "TMS Platform Team, Ju Seongjin <jsj@innodep.com>",
@@ -13,7 +13,7 @@
     "dms-player"
   ],
   "scripts": {
-    "build:prod": "npx webpack --mode production",
+    "build:prod": "npx webpack --no-devtool --mode production",
     "build:dev": "npx webpack --mode development",
     "build:min": "npx webpack --config=webpack.config.min.js --mode production --devtool none",
     "build:doc": "tsc && jsdoc -c jsdoc.json",

@@ -33,7 +33,7 @@ export abstract class WSocketBase {
     this.onOpen = this.onOpen.bind(this);
   }
 
-  public start(duration: number = 3000): Promise<boolean> {
+  public start(duration: number = 5000): Promise<boolean> {
     this.socketClient = new WebSocket(this.url);
     this.socketClient.binaryType = 'arraybuffer';
 
@@ -55,8 +55,9 @@ export abstract class WSocketBase {
     if (!this.connected) {
       Log.info('connection failed');
     }
-
-    this.socketClient.send(data);
+    if (this.socketClient.readyState === 1) {
+      this.socketClient.send(data);
+    }
   }
 
   public close() {

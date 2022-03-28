@@ -20,7 +20,7 @@ import {
   StreamMessage,
 } from './stream-define';
 
-const Log = getTagged('client:stream');
+const Log = getTagged('ws:client:stream');
 
 export let endDateTime: any;
 export let firstFlag: boolean = true;

@@ -4,4 +4,4 @@ build
 jsdocs
 .vscode
 .idea
-.package-lock.json
+/package-lock.json
